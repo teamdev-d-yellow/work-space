@@ -39,4 +39,11 @@ class Tetris {
           this.fall();
       }
   }
+
+  // 指定されたキャンパスをクリアする. 黒で塗りつぶされる.
+  clear(canvas) {
+    let context = canvas.getContext("2d");
+    context.fillStyle = "rgb(0, 0, 0)";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }
 }
