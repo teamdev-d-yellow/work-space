@@ -1,6 +1,4 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-  const button = document.getElementById("alertButton");
-  button.addEventListener("click", () => {
-    alert("ボタンがタップされました！");
-  });
-});
+const blockSize = 30;
+const boardRow = 20;
+const boardCol = 10;
+const cvs = document.getElementById('cvs');
