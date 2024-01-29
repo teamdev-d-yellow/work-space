@@ -13,8 +13,11 @@ class Tetris {
       (this.stageCanvas.height - this.cellSize * this.stageHeight) / 2;
     this.blocks = this.createBlocks();
     this.deletedLines = 0;
+    this.holdCanvas = document.getElementById("hold");
+    this.holdBlock = null;
+    this.canHold = true;
 
-    // テンキーのによるテトリミノの操作
+    // テンキーによるテトリミノの操作
     window.onkeydown = (e) => {
       if (e.keyCode === 37) {
         this.moveLeft();
@@ -24,6 +27,8 @@ class Tetris {
         this.moveRight();
       } else if (e.keyCode === 40) {
         this.fall();
+      } else if (e.keyCode === 32) { // スペースボタン
+        this.hold();
       }
     };
 
@@ -39,6 +44,9 @@ class Tetris {
     };
     document.getElementById("tetris-fall-button").onmousedown = (e) => {
       this.fall();
+    };
+    document.getElementById("tetris-hold-button").onmousedown = (e) => {
+      this.hold();
     };
   }
 
@@ -187,7 +195,7 @@ class Tetris {
 
   rotate() {
     let newAngle;
-    if (this.blockAngle < 3) {
+    if (this.blockAngle < 3) { // this.blockAngle == 回転角度
       newAngle = this.blockAngle + 1;
     } else {
       newAngle = 0;
@@ -513,6 +521,7 @@ class Tetris {
       messageElem.innerText = "GAME OVER";
       return false;
     }
+    this.canHold = true;
     return true;
   }
   // 次のブロックを描画
@@ -543,6 +552,44 @@ class Tetris {
           );
         }
       }
+    }
+  }
+
+  // テトリミノの保存と交換
+  hold() {
+    if (this.canHold) {
+      // 保存中が空でない場合は、現在のテトリミノと交換
+      if (this.holdBlock !== null) {
+        const temp = this.holdBlock;
+        this.holdBlock = this.currentBlock;
+        this.currentBlock = temp;
+        this.blockX; // 0にすると初期位置に交換後ブロックが出現
+        this.blockY; // 0にすると初期位置に交換後ブロックが出現
+        this.blockAngle;
+      } else {
+        // 保存中が空の場合は、現在のテトリミノを保存
+        this.holdBlock = this.currentBlock;
+        this.currentBlock = null;
+        this.createNewBlock();
+      }
+
+      this.canHold = true; // falseにすると交換は一度しかできなくなる trueは何度でも可能
+      this.drawHoldBlock();
+      this.refreshStage();
+    }
+  }
+
+  // 保存中にあるテトリミノを描画
+  drawHoldBlock() {
+    this.clear(this.holdCanvas);
+    if (this.holdBlock !== null) {
+      this.drawBlock(
+        this.cellSize * 2,
+        this.cellSize,
+        this.holdBlock,
+        0,
+        this.holdCanvas
+      );
     }
   }
 }
