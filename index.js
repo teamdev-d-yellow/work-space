@@ -16,6 +16,7 @@ class Tetris {
     this.holdCanvas = document.getElementById("hold");
     this.holdBlock = null;
     this.canHold = true;
+    this.dropSpeed = 700;
 
     // テンキーによるテトリミノの操作
     window.onkeydown = (e) => {
@@ -81,7 +82,7 @@ class Tetris {
         this.stageCanvas
       );
     }
-    setTimeout(this.mainLoop.bind(this), 500);
+    setTimeout(this.mainLoop.bind(this), this.dropSpeed);
   }
 
   // ランダムにブロックのタイプを選択
@@ -157,7 +158,9 @@ class Tetris {
         }
         let linesElem = document.getElementById("lines");
         this.deletedLines++;
-        linesElem.innerText = "" + this.deletedLines;
+        linesElem.innerText = "" + (this.deletedLines * 100);
+        // 行が削除されたら速度を更新
+        this.changeDropSpeedDependOnDeletedLines();
       } else {
         y--;
       }
@@ -590,6 +593,21 @@ class Tetris {
         0,
         this.holdCanvas
       );
+    }
+  }
+
+  // スコアに応じてテトリミノの落ちるスピードを変える
+  changeDropSpeedDependOnDeletedLines() {
+    switch (this.deletedLines) {
+      case 3:
+        this.dropSpeed = 500;
+        break;
+      case 5:
+        this.dropSpeed = 300;
+        break;
+      case 7:
+        this.dropSpeed = 100;
+        break;
     }
   }
 }
