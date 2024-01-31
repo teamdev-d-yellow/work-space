@@ -17,6 +17,9 @@ class Tetris {
     this.holdBlock = null;
     this.canHold = true;
     this.dropSpeed = 700;
+    this.mainLoopTimeout = null; // タイマーIDを格納するためのプロパティ
+    
+
 
     // テンキーによるテトリミノの操作
     window.onkeydown = (e) => {
@@ -28,7 +31,8 @@ class Tetris {
         this.moveRight();
       } else if (e.keyCode === 40) {
         this.fall();
-      } else if (e.keyCode === 32) { // スペースボタン
+      } else if (e.keyCode === 32) {
+        // スペースボタン
         this.hold();
       }
     };
@@ -85,7 +89,7 @@ class Tetris {
         this.stageCanvas
       );
     }
-    setTimeout(this.mainLoop.bind(this), this.dropSpeed);
+    this.mainLoopTimeout = setTimeout(this.mainLoop.bind(this), this.dropSpeed);
   }
 
   // ランダムにブロックのタイプを選択
@@ -161,7 +165,7 @@ class Tetris {
         }
         let linesElem = document.getElementById("lines");
         this.deletedLines++;
-        linesElem.innerText = "" + (this.deletedLines * 100);
+        linesElem.innerText = "" + this.deletedLines * 100;
         // 行が削除されたら速度を更新
         this.changeDropSpeedDependOnDeletedLines();
       } else {
@@ -201,7 +205,8 @@ class Tetris {
 
   rotate() {
     let newAngle;
-    if (this.blockAngle < 3) { // this.blockAngle == 回転角度
+    if (this.blockAngle < 3) {
+      // this.blockAngle == 回転角度
       newAngle = this.blockAngle + 1;
     } else {
       newAngle = 0;
@@ -616,11 +621,22 @@ class Tetris {
 
   // テトリスゲームの状態を初期化
   retryGame() {
+    this.clear(this.holdCanvas);
+    this.holdBlock = null;
     this.deletedLines = 0;
+    this.dropSpeed = 700;
+    this.blockY = 0;
+    this.currentBlock = null;
     let linesElem = document.getElementById("lines");
-    linesElem.innerText = "0"
+    linesElem.innerText = "0";
     let messageElem = document.getElementById("message");
     messageElem.innerText = "";
+    // 現在実行中のmainLoopをキャンセル
+    if (this.mainLoopTimeout !== null) {
+      clearTimeout(this.mainLoopTimeout);
+      this.mainLoopTimeout = null;
+    }
+    // ゲームを再開
     this.startGame();
   }
 }
