@@ -49,6 +49,9 @@ class Tetris {
     document.getElementById("tetris-hold-button").onmousedown = (e) => {
       this.hold();
     };
+    document.getElementById("tetris-retry-button").onclick = (e) => {
+      this.retryGame();
+    };
   }
 
   // ゲームを開始. 仮想ステージを初期化し、現在のブロックと次のブロックを設定し、メインゲームループを開始.
@@ -609,5 +612,15 @@ class Tetris {
         this.dropSpeed = 100;
         break;
     }
+  }
+
+  // テトリスゲームの状態を初期化
+  retryGame() {
+    this.deletedLines = 0;
+    let linesElem = document.getElementById("lines");
+    linesElem.innerText = "0"
+    let messageElem = document.getElementById("message");
+    messageElem.innerText = "";
+    this.startGame();
   }
 }
