@@ -571,6 +571,7 @@ class Tetris {
     if (this.canHold) {
       // 保存中が空でない場合は、現在のテトリミノと交換
       if (this.holdBlock !== null) {
+        // ブロックを動かせるかどうかをチェック。壁、床、他のブロックとの衝突を検出。
         if(this.checkBlockMove(this.blockX, this.blockY, this.holdBlock, this.blockAngle)){
           const temp = this.holdBlock;
           this.holdBlock = this.currentBlock;
