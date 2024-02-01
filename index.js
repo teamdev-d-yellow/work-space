@@ -571,12 +571,14 @@ class Tetris {
     if (this.canHold) {
       // 保存中が空でない場合は、現在のテトリミノと交換
       if (this.holdBlock !== null) {
-        const temp = this.holdBlock;
-        this.holdBlock = this.currentBlock;
-        this.currentBlock = temp;
-        this.blockX; // 0にすると初期位置に交換後ブロックが出現
-        this.blockY; // 0にすると初期位置に交換後ブロックが出現
-        this.blockAngle;
+        if(this.checkBlockMove(this.blockX, this.blockY, this.holdBlock, this.blockAngle)){
+          const temp = this.holdBlock;
+          this.holdBlock = this.currentBlock;
+          this.currentBlock = temp;
+          this.blockX; // 0にすると初期位置に交換後ブロックが出現
+          this.blockY; // 0にすると初期位置に交換後ブロックが出現
+          this.blockAngle;
+        }
       } else {
         // 保存中が空の場合は、現在のテトリミノを保存
         this.holdBlock = this.currentBlock;
