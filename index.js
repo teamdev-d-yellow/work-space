@@ -18,6 +18,7 @@ class Tetris {
     this.canHold = true;
     this.dropSpeed = 700;
     this.mainLoopTimeout = null; // タイマーIDを格納するためのプロパティ
+    this.isPaused = false;        // ゲームの一時停止状態を追跡するためのプロパティ
     
 
 
@@ -55,6 +56,12 @@ class Tetris {
     };
     document.getElementById("tetris-retry-button").onclick = (e) => {
       this.retryGame();
+    };
+    document.getElementById("tetris-pause-button").onclick = (e) => {
+      this.pauseGame();
+    };
+    document.getElementById("tetris-resume-button").onclick = (e) => {
+      this.resumeGame();
     };
   }
 
@@ -641,5 +648,30 @@ class Tetris {
     }
     // ゲームを再開
     this.startGame();
+  }
+
+  // ゲームの一時停止
+  pauseGame() {
+    if (!this.isPaused) {
+      this.isPaused = true;
+      // 現在実行中のmainLoopをキャンセル
+      if (this.mainLoopTimeout !== null) {
+        clearTimeout(this.mainLoopTimeout);
+        this.mainLoopTimeout = null;
+      }
+      // 一時停止メッセージを表示
+      let messageElem = document.getElementById("current-tetris-state");
+      messageElem.innerText = "PAUSED";
+    }
+  }
+
+  // ゲームの再開
+  resumeGame() {
+    if (this.isPaused) {
+      this.isPaused = false;
+      let messageElem = document.getElementById("current-tetris-state");
+      messageElem.innerText = "";
+      this.mainLoop();
+    }
   }
 }
