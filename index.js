@@ -647,6 +647,17 @@ class Tetris {
     this.isPaused = false;
     let linesElem = document.getElementById("lines");
     linesElem.innerText = "0";
+
+    const gameStatusElem = document.getElementById("gameStatus");
+    gameStatusElem.classList.remove("bg-danger");
+    gameStatusElem.classList.add("bg-primary");
+
+      // gameStatusのinnerHTMLを取得し、GAME OVERのspanを削除
+      gameStatusElem.innerHTML = gameStatusElem.innerHTML.replace(
+        '<span class="h1">GAME OVER</span><br>',
+        ""
+      );
+    
     
     // 現在実行中のmainLoopをキャンセル
     if (this.mainLoopTimeout !== null) {
