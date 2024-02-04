@@ -16,6 +16,7 @@
     <header class="p-3 h2">テトリス風ゲーム</header>
     <div class="d-inline-block d-flex justify-content-center">
       <div class="d-flex gap-3">
+        <p><span id="current-tetris-state"></span></p>
         <canvas id="stage" width="250px" height="500px" style="background-color:black;">
         </canvas>
         <div class="">
@@ -49,6 +50,8 @@
             </tr>
             <tr>
               <td id="tetris-retry-button" class="btn btn-primary">Retry</td>
+              <td id="tetris-pause-button" class="btn btn-primary">Pause</td>
+              <td id="tetris-resume-button" class="btn btn-primary">Resume</td>
             </tr>
           </table>
         </div>
