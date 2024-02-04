@@ -647,10 +647,13 @@ class Tetris {
     this.dropSpeed = 700;
     this.blockY = 0;
     this.currentBlock = null;
+    this.isPaused = false;
     let linesElem = document.getElementById("lines");
     linesElem.innerText = "0";
     let messageElem = document.getElementById("message");
     messageElem.innerText = "";
+    let currentTetrisStateMsgElem = document.getElementById('current-tetris-state');
+    currentTetrisStateMsgElem.innerText = "";
     // 現在実行中のmainLoopをキャンセル
     if (this.mainLoopTimeout !== null) {
       clearTimeout(this.mainLoopTimeout);
