@@ -183,60 +183,68 @@ class Tetris {
 
   // ユーザーの操作に応じて、現在のブロックを動かす. それぞれの操作可能性をcheckBlockMoveメソッドでチェック.
   moveLeft() {
-    if (
-      this.checkBlockMove(
-        this.blockX - 1,
-        this.blockY,
-        this.currentBlock,
-        this.blockAngle
-      )
-    ) {
-      this.blockX--;
-      this.refreshStage();
+    if (!this.isPaused) {  // ゲームが一時停止中でない場合のみ処理
+      if (
+        this.checkBlockMove(
+          this.blockX - 1,
+          this.blockY,
+          this.currentBlock,
+          this.blockAngle
+        )
+      ) {
+        this.blockX--;
+        this.refreshStage();
+      }
     }
   }
 
   moveRight() {
-    if (
-      this.checkBlockMove(
-        this.blockX + 1,
-        this.blockY,
-        this.currentBlock,
-        this.blockAngle
-      )
-    ) {
-      this.blockX++;
-      this.refreshStage();
+    if (!this.isPaused) {  // ゲームが一時停止中でない場合のみ処理
+      if (
+        this.checkBlockMove(
+          this.blockX + 1,
+          this.blockY,
+          this.currentBlock,
+          this.blockAngle
+        )
+      ) {
+        this.blockX++;
+        this.refreshStage();
+      }
     }
   }
 
   rotate() {
-    let newAngle;
-    if (this.blockAngle < 3) {
-      // this.blockAngle == 回転角度
-      newAngle = this.blockAngle + 1;
-    } else {
-      newAngle = 0;
-    }
-    if (
-      this.checkBlockMove(this.blockX, this.blockY, this.currentBlock, newAngle)
-    ) {
-      this.blockAngle = newAngle;
-      this.refreshStage();
+    if (!this.isPaused) {  // ゲームが一時停止中でない場合のみ処理
+      let newAngle;
+      if (this.blockAngle < 3) {
+        // this.blockAngle == 回転角度
+        newAngle = this.blockAngle + 1;
+      } else {
+        newAngle = 0;
+      }
+      if (
+        this.checkBlockMove(this.blockX, this.blockY, this.currentBlock, newAngle)
+      ) {
+        this.blockAngle = newAngle;
+        this.refreshStage();
+      }
     }
   }
 
   fall() {
-    while (
-      this.checkBlockMove(
-        this.blockX,
-        this.blockY + 1,
-        this.currentBlock,
-        this.blockAngle
-      )
-    ) {
-      this.blockY++;
-      this.refreshStage();
+    if (!this.isPaused) {  // ゲームが一時停止中でない場合のみ処理
+      while (
+        this.checkBlockMove(
+          this.blockX,
+          this.blockY + 1,
+          this.currentBlock,
+          this.blockAngle
+        )
+      ) {
+        this.blockY++;
+        this.refreshStage();
+      }
     }
   }
 
@@ -575,28 +583,30 @@ class Tetris {
 
   // テトリミノの保存と交換
   hold() {
-    if (this.canHold) {
-      // 保存中が空でない場合は、現在のテトリミノと交換
-      if (this.holdBlock !== null) {
-        // ブロックを交換できるかチェック。壁、床、他のブロックとの衝突を検出。
-        if(this.checkBlockMove(this.blockX, this.blockY, this.holdBlock, this.blockAngle)){
-          const temp = this.holdBlock;
+    if (!this.isPaused) {  // ゲームが一時停止中でない場合のみ処理
+      if (this.canHold) {
+        // 保存中が空でない場合は、現在のテトリミノと交換
+        if (this.holdBlock !== null) {
+          // ブロックを交換できるかチェック。壁、床、他のブロックとの衝突を検出。
+          if(this.checkBlockMove(this.blockX, this.blockY, this.holdBlock, this.blockAngle)){
+            const temp = this.holdBlock;
+            this.holdBlock = this.currentBlock;
+            this.currentBlock = temp;
+            this.blockX; // 0にすると初期位置に交換後ブロックが出現
+            this.blockY; // 0にすると初期位置に交換後ブロックが出現
+            this.blockAngle;
+          }
+        } else {
+          // 保存中が空の場合は、現在のテトリミノを保存
           this.holdBlock = this.currentBlock;
-          this.currentBlock = temp;
-          this.blockX; // 0にすると初期位置に交換後ブロックが出現
-          this.blockY; // 0にすると初期位置に交換後ブロックが出現
-          this.blockAngle;
+          this.currentBlock = null;
+          this.createNewBlock();
         }
-      } else {
-        // 保存中が空の場合は、現在のテトリミノを保存
-        this.holdBlock = this.currentBlock;
-        this.currentBlock = null;
-        this.createNewBlock();
-      }
 
-      this.canHold = true; // falseにすると交換は一度しかできなくなる trueは何度でも可能
-      this.drawHoldBlock();
-      this.refreshStage();
+        this.canHold = true; // falseにすると交換は一度しかできなくなる trueは何度でも可能
+        this.drawHoldBlock();
+        this.refreshStage();
+      }
     }
   }
 
@@ -637,10 +647,13 @@ class Tetris {
     this.dropSpeed = 700;
     this.blockY = 0;
     this.currentBlock = null;
+    this.isPaused = false;
     let linesElem = document.getElementById("lines");
     linesElem.innerText = "0";
     let messageElem = document.getElementById("message");
     messageElem.innerText = "";
+    let currentTetrisStateMsgElem = document.getElementById('current-tetris-state');
+    currentTetrisStateMsgElem.innerText = "";
     // 現在実行中のmainLoopをキャンセル
     if (this.mainLoopTimeout !== null) {
       clearTimeout(this.mainLoopTimeout);
