@@ -19,6 +19,7 @@ class Tetris {
     this.dropSpeed = 700;
     this.mainLoopTimeout = null; // タイマーIDを格納するためのプロパティ
     this.isPaused = false;        // ゲームの一時停止状態を追跡するためのプロパティ
+    this.canUseMotionButton = true; // 矢印キーの使用可否を追跡するためのプロパティ
     
 
 
@@ -39,30 +40,32 @@ class Tetris {
     };
 
     // 画面上のボタンによるテトリミノの操作
-    document.getElementById("tetris-move-left-button").onmousedown = (e) => {
-      this.moveLeft();
-    };
-    document.getElementById("tetris-rotate-button").onmousedown = (e) => {
-      this.rotate();
-    };
-    document.getElementById("tetris-move-right-button").onmousedown = (e) => {
-      this.moveRight();
-    };
-    document.getElementById("tetris-fall-button").onmousedown = (e) => {
-      this.fall();
-    };
-    document.getElementById("tetris-hold-button").onmousedown = (e) => {
-      this.hold();
-    };
-    document.getElementById("tetris-retry-button").onclick = (e) => {
-      this.retryGame();
-    };
-    document.getElementById("tetris-pause-button").onclick = (e) => {
-      this.pauseGame();
-    };
-    document.getElementById("tetris-resume-button").onclick = (e) => {
-      this.resumeGame();
-    };
+    if (this.canUseMotionButton) {
+      document.getElementById("tetris-move-left-button").onmousedown = (e) => {
+        this.moveLeft();
+      };
+      document.getElementById("tetris-rotate-button").onmousedown = (e) => {
+        this.rotate();
+      };
+      document.getElementById("tetris-move-right-button").onmousedown = (e) => {
+        this.moveRight();
+      };
+      document.getElementById("tetris-fall-button").onmousedown = (e) => {
+        this.fall();
+      };
+      document.getElementById("tetris-hold-button").onmousedown = (e) => {
+        this.hold();
+      };
+      document.getElementById("tetris-retry-button").onclick = (e) => {
+        this.retryGame();
+      };
+      document.getElementById("tetris-pause-button").onclick = (e) => {
+        this.pauseGame();
+      };
+      document.getElementById("tetris-resume-button").onclick = (e) => {
+        this.resumeGame();
+      };
+    }
   }
 
   // ゲームを開始. 仮想ステージを初期化し、現在のブロックと次のブロックを設定し、メインゲームループを開始.
@@ -652,7 +655,7 @@ class Tetris {
     linesElem.innerText = "0";
     let messageElem = document.getElementById("message");
     messageElem.innerText = "";
-    let currentTetrisStateMsgElem = document.getElementById('current-tetris-state');
+    let currentTetrisStateMsgElem = document.getElementById("current-tetris-state");
     currentTetrisStateMsgElem.innerText = "";
     // 現在実行中のmainLoopをキャンセル
     if (this.mainLoopTimeout !== null) {
@@ -667,6 +670,7 @@ class Tetris {
   pauseGame() {
     if (!this.isPaused) {
       this.isPaused = true;
+      this.canUseMotionButton = false;
       // 現在実行中のmainLoopをキャンセル
       if (this.mainLoopTimeout !== null) {
         clearTimeout(this.mainLoopTimeout);
@@ -682,6 +686,7 @@ class Tetris {
   resumeGame() {
     if (this.isPaused) {
       this.isPaused = false;
+      this.canUseMotionButton = true;
       let messageElem = document.getElementById("current-tetris-state");
       messageElem.innerText = "";
       this.mainLoop();
