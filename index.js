@@ -18,9 +18,7 @@ class Tetris {
     this.canHold = true;
     this.dropSpeed = 700;
     this.mainLoopTimeout = null; // タイマーIDを格納するためのプロパティ
-    this.isPaused = false;        // ゲームの一時停止状態を追跡するためのプロパティ
-    
-
+    this.isPaused = false; // ゲームの一時停止状態を追跡するためのプロパティ
 
     // テンキーによるテトリミノの操作
     window.onkeydown = (e) => {
@@ -535,8 +533,13 @@ class Tetris {
         this.blockAngle
       )
     ) {
-      let messageElem = document.getElementById("message");
-      messageElem.innerText = "GAME OVER";
+      let gameStatusElem = document.getElementById("gameStatus");
+      gameStatusElem.classList.remove("bg-primary");
+      gameStatusElem.classList.add("bg-danger");
+
+      gameStatusElem.innerHTML =
+        "<span class='h1'>GAME OVER</span><br>" + gameStatusElem.innerHTML;
+
       return false;
     }
     this.canHold = true;
@@ -545,13 +548,10 @@ class Tetris {
   // 次のブロックを描画
   drawNextBlock() {
     this.clear(this.nextCanvas);
-    this.drawBlock(
-      this.cellSize * 2,
-      this.cellSize,
-      this.nextBlock,
-      0,
-      this.nextCanvas
-    );
+    // 中央に描画するための調整
+    const centerX = (this.nextCanvas.width - 2 * this.cellSize) / 2;
+    const centerY = (this.nextCanvas.height - 1 * this.cellSize) / 2;
+    this.drawBlock(centerX, centerY, this.nextBlock, 0, this.nextCanvas);
   }
   // ステージ全体を描画
   drawStage() {
@@ -579,7 +579,14 @@ class Tetris {
       // 保存中が空でない場合は、現在のテトリミノと交換
       if (this.holdBlock !== null) {
         // ブロックを交換できるかチェック。壁、床、他のブロックとの衝突を検出。
-        if(this.checkBlockMove(this.blockX, this.blockY, this.holdBlock, this.blockAngle)){
+        if (
+          this.checkBlockMove(
+            this.blockX,
+            this.blockY,
+            this.holdBlock,
+            this.blockAngle
+          )
+        ) {
           const temp = this.holdBlock;
           this.holdBlock = this.currentBlock;
           this.currentBlock = temp;
@@ -604,13 +611,10 @@ class Tetris {
   drawHoldBlock() {
     this.clear(this.holdCanvas);
     if (this.holdBlock !== null) {
-      this.drawBlock(
-        this.cellSize * 2,
-        this.cellSize,
-        this.holdBlock,
-        0,
-        this.holdCanvas
-      );
+      const centerX = (this.nextCanvas.width - 2 * this.cellSize) / 2;
+      const centerY = (this.nextCanvas.height - 1 * this.cellSize) / 2;
+
+      this.drawBlock(centerX, centerY, this.holdBlock, 0, this.holdCanvas);
     }
   }
 
@@ -639,8 +643,9 @@ class Tetris {
     this.currentBlock = null;
     let linesElem = document.getElementById("lines");
     linesElem.innerText = "0";
-    let messageElem = document.getElementById("message");
-    messageElem.innerText = "";
+
+    
+
     // 現在実行中のmainLoopをキャンセル
     if (this.mainLoopTimeout !== null) {
       clearTimeout(this.mainLoopTimeout);
@@ -659,9 +664,21 @@ class Tetris {
         clearTimeout(this.mainLoopTimeout);
         this.mainLoopTimeout = null;
       }
-      // 一時停止メッセージを表示
-      let messageElem = document.getElementById("current-tetris-state");
-      messageElem.innerText = "PAUSED";
+      let gameStatusElem = document.getElementById("gameStatus");
+
+      gameStatusElem.classList.remove("bg-primary");
+      gameStatusElem.classList.add("bg-success");
+
+      gameStatusElem.classList.remove("bg-primary");
+      gameStatusElem.classList.add("bg-success");
+
+      gameStatusElem.innerHTML =
+        "<span class='h1'>停止中</span><br>" + gameStatusElem.innerHTML;
+
+      document.getElementById("tetris-pause-button").classList.add("d-none");
+      document
+        .getElementById("tetris-resume-button")
+        .classList.remove("d-none");
     }
   }
 
@@ -669,8 +686,20 @@ class Tetris {
   resumeGame() {
     if (this.isPaused) {
       this.isPaused = false;
-      let messageElem = document.getElementById("current-tetris-state");
-      messageElem.innerText = "";
+     
+      const gameStatusElem = document.getElementById("gameStatus");
+
+      // gameStatusのinnerHTMLを取得し、GAME OVERのspanを削除
+      gameStatusElem.innerHTML = gameStatusElem.innerHTML.replace(
+        '<span class="h1">停止中</span><br>',
+        ""
+      );
+      gameStatusElem.classList.remove("bg-success");
+      gameStatusElem.classList.add("bg-primary");
+      // ボタンの表示を切り替える
+      document.getElementById("tetris-pause-button").classList.remove("d-none");
+      document.getElementById("tetris-resume-button").classList.add("d-none");
+
       this.mainLoop();
     }
   }

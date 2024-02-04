@@ -13,50 +13,89 @@
     <script type="text/javascript" src="index.js"></script>
   </head>
   <body>
-    <header class="p-3 h2">テトリス風ゲーム</header>
+    <header class="p-3 h2 text-center">テトリス風ゲーム</header>
+
     <div class="d-inline-block d-flex justify-content-center">
       <div class="d-flex gap-3">
         <p><span id="current-tetris-state"></span></p>
         <canvas id="stage" width="250px" height="500px" style="background-color:black;">
         </canvas>
         <div class="">
-          <p>Next:</p>
-          <canvas id="next"  width="100px" height="100px" style="background-color:black;">
+          <p class="fw-bold">Next:</p>
+          <canvas
+            id="next"
+            width="125px"
+            height="125px"
+            style="background-color: black"
+          >
           </canvas>
-          <p>保存中:</p>
-          <canvas id="hold"  width="100px" height="100px" style="background-color:black;">
+          <p class="fw-bold">ホールド:</p>
+          <canvas
+            id="hold"
+            width="125px"
+            height="125px"
+            style="background-color: black"
+          >
           </canvas>
-          <p>スコア:<span id="lines">0</span></p>
-          <p><span id="message"></span></p>
           <table class="mx-auto">
-            <tr class=" d-flex justify-content-center">
+            <tr class="d-flex justify-content-center">
               <td></td>
-              <td id="tetris-hold-button" class="btn btn-primary">⇔</td>
-              <td></td>
-            </tr>
-            <tr class=" d-flex justify-content-center">
-              <td></td>
-              <td id="tetris-rotate-button" class="btn btn-primary">↻</td>
+              <td id="tetris-hold-button" class="btn btn-primary mb-1">交換</td>
               <td></td>
             </tr>
-            <tr class=" d-flex justify-content-center">
-              <td id="tetris-move-left-button" class="btn btn-primary">←</td>
-              <td id="tetris-move-right-button" class="btn btn-primary">→</td>
-            </tr>
-            <tr class=" d-flex justify-content-center">
+            <tr class="d-flex justify-content-center">
               <td></td>
-              <td id="tetris-fall-button" class="btn btn-primary">↓</td>
+              <td
+                id="tetris-rotate-button"
+                class="btn btn-primary rounded-circle"
+              >
+                ↻
+              </td>
               <td></td>
             </tr>
-            <tr>
-              <td id="tetris-retry-button" class="btn btn-primary">Retry</td>
-              <td id="tetris-pause-button" class="btn btn-primary">Pause</td>
-              <td id="tetris-resume-button" class="btn btn-primary">Resume</td>
+            <tr class="d-flex justify-content-center">
+              <td
+                id="tetris-move-left-button"
+                class="btn btn-primary rounded-circle me-4"
+              >
+                ←
+              </td>
+              <td
+                id="tetris-move-right-button"
+                class="btn btn-primary rounded-circle"
+              >
+                →
+              </td>
+            </tr>
+            <tr class="d-flex justify-content-center">
+              <td></td>
+              <td
+                id="tetris-fall-button"
+                class="btn btn-primary rounded-circle"
+              >
+                ↓
+              </td>
+              <td></td>
+            </tr>
+            <tr class="d-flex justify-content-center mt-2">
+              <td id="tetris-retry-button" class="btn btn-outline-primary me-2">Retry</td>
+              <td id="tetris-pause-button" class="btn btn-outline-primary">Pause</td>
+              <td id="tetris-resume-button" class="btn btn-outline-success d-none">Resume</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
+    <div class="mt-5">
+      <div class="text-center">
+        <div class="d-inline-block">
+          <p id="gameStatus" class="p-4 px-5 h3 text-white rounded-3 bg-primary">
+            スコア:<span id="lines" class="h4">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
     <script>
       var tetris = new Tetris();
       tetris.startGame();
